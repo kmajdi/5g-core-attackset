@@ -1,25 +1,21 @@
 import subprocess
 import time
+from ..attack import Attack
 
-class PortScanning:
-    def __init__(self, target_ip):
+class PortScanning(Attack):
+    def __init__(self, target_ip, ports=["22", "80", "443"]):
         self.target_ip = target_ip
+        self.ports = ports
+        super.__init__("port_scanning")
 
-    def attack(self, wait):
+    def execute(self, wait):
         time.sleep(wait)
-        result = subprocess.run(['nmap', '-p', "22", "80", "443", self.target_ip], capture_output=True, text=True)
+        result = subprocess.run(['nmap', '-p', *self.ports, self.target_ip], capture_output=True, text=True)
         print(result.stdout)
 
-    def clean_up(self, wait):
-        time.sleep(wait)
-        print("No cleanup required for Port Scanning")
-
-# Example usage for AMF component:
-def get_ips():
-    result = subprocess.run("kubectl get services --all-namespaces".split(), capture_output=True, text=True)
-    output = [h for h in result.stdout.strip().split() if h.startswith("10.")]
-    return output
-
-for h in get_ips():
-    port_scanning_amf = PortScanning(h)
-    port_scanning_amf.attack(0)
+    def get_log_start(self):
+        return f"[{self.time_start}][{self.name}][{self.target_ip}] Attack Started"
+    
+    def get_log_end(self):
+        self.finalize()
+        return f"[{self.time_end}][{self.name}][{self.target_ip}] Attack Ended"
