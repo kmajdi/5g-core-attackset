@@ -1,6 +1,6 @@
 import subprocess
 import time
-from ..attack import Attack
+from attack import Attack
 
 class PortScanning(Attack):
     def __init__(self, target_ip, ports=["22", "80", "443"]):

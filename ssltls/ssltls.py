@@ -2,7 +2,7 @@ from scapy.all import *
 import sys
 import os
 import time
-from ..attack import Attack
+from attack import Attack
 
 class SSLTLSAttack(Attack):
     def __init__(self, victim_ip, gateway_ip):
@@ -88,7 +88,7 @@ def get_ips():
 
 
 
-
+'''
 # Example usage for a component:
 for h in get_ips():
     gateway = h.split(".")
@@ -99,4 +99,4 @@ for h in get_ips():
         ssltls_attack.attack(5)
     except KeyboardInterrupt:
         ssltls_attack.clean_up(5)
-
+'''

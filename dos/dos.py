@@ -1,6 +1,6 @@
 import subprocess as sp
 import time
-from ..attack import Attack
+from attack import Attack
 
 class Dos(Attack):
     def __init__(self, trigger_time=0, container_name="ESCAPE_DOS"):

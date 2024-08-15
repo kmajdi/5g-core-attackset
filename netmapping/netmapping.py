@@ -1,6 +1,6 @@
 import subprocess
 import time
-from ..attack import Attack
+from attack import Attack
 
 class NetworkMapping(Attack):
     def __init__(self, target_ip):

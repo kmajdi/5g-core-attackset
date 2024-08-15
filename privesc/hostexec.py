@@ -1,5 +1,5 @@
 import subprocess, time
-from ..attack import Attack
+from attack import Attack
 
 files = {
     "docker_file": """
