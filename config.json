@@ -1,11 +1,11 @@
 {
 
-	"time_start": "2024-08-28 12:00:00",
-	"time_end": "2024-08-28 13:00:00",
-	"attack_types": [
-		"dos",
-		"privesc",
-		"portscanning"
+	"time_start": "2024-08-15 21:00:00",
+	"time_end": "2024-08-15 22:00:00",
+	"attack_type": [
+		"denial_of_service",
+		"host_write",
+		"port_scanning"
 	],
 	"attack_count": 15
 }

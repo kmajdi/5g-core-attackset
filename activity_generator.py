@@ -2,9 +2,10 @@ import pandas as pd
 import json
 import numpy as np
 from random import randrange
-from datetime import timedelta
+from datetime import timedelta, datetime
 import asyncio
 from get_attack_from_name import get_attack
+import uuid
 
 def random_date(start, end):
     """
@@ -36,9 +37,9 @@ class ActivityGenerator:
         self.attack_objects = {}
 
     def start(self):
-        dates = [random_date(self.time_start, self.time_end) for count in range(attack_count)]
+        dates = [random_date(self.time_start, self.time_end) for count in range(self.attack_count)]
         attack_types = np.random.choice(self.attack_type, size = self.attack_count, replace = True)
-        attack_ids = [str(uuid.uuid4()) for h in range(attack_count)]
+        attack_ids = [str(uuid.uuid4()) for h in range(self.attack_count)]
         self.attack_list = pd.DataFrame({"id": attack_ids, "time": dates, "type": attack_types})
         self.attack_list.to_csv("attack_list.csv")
         self.attack_list["time"] = pd.to_datetime(self.attack_list["time"])
@@ -61,7 +62,7 @@ class ActivityGenerator:
         self.attacks_in_progress = self.attacks_in_progress + to_start.tolist()
 
     def make_in_progress(self):
-        to_start = self.attack_list[~self.attack_list["id"].isin(self.attacks_in_progress + attacks_completed) & (self.attack_list["date"] <= datetime.now())]["id"].values
+        to_start = self.attack_list[~self.attack_list["id"].isin(self.attacks_in_progress + self.attacks_completed) & (self.attack_list["time"] <= datetime.now())]["id"].values
         return to_start
     
     
