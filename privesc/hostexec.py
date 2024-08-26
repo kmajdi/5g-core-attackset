@@ -38,6 +38,5 @@ class HostWrite(Attack):
         return f"[{self.time_start}][{self.name}][{self.container}] Attack Started"
     
     def get_log_end(self):
-        self.finalize()
         return f"[{self.time_end}][{self.name}][{self.container}] Attack Ended"
 

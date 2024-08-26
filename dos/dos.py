@@ -28,5 +28,4 @@ class Dos(Attack):
         return f"[{self.time_start}][{self.name}][{self.container_name}] Attack Started"
     
     def get_log_end(self):
-        self.finalize()
         return f"[{self.time_end}][{self.name}][{self.container_name}] Attack Ended"

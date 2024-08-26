@@ -77,7 +77,6 @@ class SSLTLSAttack(Attack):
         return f"[{self.time_start}][{self.name}][{self.victim_ip}] Attack Started"
     
     def get_log_end(self):
-        self.finalize()
         return f"[{self.time_end}][{self.name}][{self.victim_ip}] Attack Ended"
 
 def get_ips():
