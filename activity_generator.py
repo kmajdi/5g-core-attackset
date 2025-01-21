@@ -54,6 +54,12 @@ class ActivityGenerator:
         self.attack_count = config["attack_count"]
         self.attack_type = config["attack_type"]
         self.manual = manual
+        
+        if not self.manual:
+            if self.time_start > self.time_end:
+                raise ValueError("Start time must be smaller than end time.")
+            if self.time_start < datetime.now() - timedelta(hours=5):
+                raise ValueError ("Start time must be after now.")
 
         self.attacks_in_progress = []
         self.attacks_completed = []
