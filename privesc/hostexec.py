@@ -24,7 +24,7 @@ class HostWrite(Attack):
         dockerfile.write("WORKDIR $WORKDIR\n")
         dockerfile.close()
         subprocess.run(["docker", "build", "-t", image, "."])
-        super.__init__("host_exec")
+        super().__init__("host_write")
     
     def execute(self, in_sec=0, kill_in_sec=0):
         # time.sleep(in_sec)

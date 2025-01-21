@@ -2,10 +2,11 @@ import pandas as pd
 import json
 import numpy as np
 from random import randrange
-from datetime import timedelta, datetime
+from datetime import timedelta, timezone, datetime
 import asyncio
 from get_attack_from_name import get_attack
 import uuid
+import colorama
 
 def random_date(start, end):
     """
@@ -50,8 +51,8 @@ class ActivityGenerator:
 
         self.time_start = datetime.strptime(config["time_start"], '%Y-%m-%d %H:%M:%S')
         self.time_end = datetime.strptime(config["time_end"], '%Y-%m-%d %H:%M:%S')
-        self.attack_type = config["attack_type"]
         self.attack_count = config["attack_count"]
+        self.attack_type = config["attack_type"]
         self.manual = manual
 
         self.attacks_in_progress = []
@@ -71,36 +72,41 @@ class ActivityGenerator:
             attack_types = np.random.choice(self.attack_type, size = self.attack_count, replace = True)
             attack_ids = [str(uuid.uuid4()) for h in range(self.attack_count)]
             self.attack_list = pd.DataFrame({"id": attack_ids, "time": dates, "type": attack_types})
-            self.attack_list.to_csv("attack_list.csv")
+            self.attack_list.sort_values(by="time").to_csv("attack_list.csv", index=False)
         
         self.attack_list["time"] = pd.to_datetime(self.attack_list["time"])
+        print("[{}][ACTGEN] Malicious Activity Generator Started.".format(datetime.now() - timedelta(hours=5)))
 
     def update(self):
         # Update function:
         # To be called once in each iteration of the orchestrator
         #   - Log end for attacks that have already been started
         #   - Start new attacks once their time has come and log for their start
-        end_progress = []
         for attack_id in self.attacks_in_progress:
-            if attack_objects[attack_id].time_end:
-                self.end_progress.append(attack_id)
+            if self.attack_objects[attack_id].time_end and attack_id not in self.attacks_completed:
                 self.attacks_completed.append(attack_id)
-                print(attack_objects[attack_id].get_log_end())
+                print(self.attack_objects[attack_id].get_log_end())
 
         to_start = self.make_in_progress()
         for attack_id in to_start:
             attack_type = self.attack_list[self.attack_list["id"] == attack_id]["type"].values[0]
-            attack_objects[attack_id] = get_attack(attack_type)
-            print(attack_objects[attack_id].get_log_start())
-            asyncio.run(run_attack(attack_objects[attack_id]))
+            self.attack_objects[attack_id] = get_attack(attack_type)
+            print(self.attack_objects[attack_id].get_log_start())
+            asyncio.run(run_attack(self.attack_objects[attack_id]))
 
         self.attacks_in_progress = self.attacks_in_progress + to_start.tolist()
 
     def make_in_progress(self):
         # Helper function to identify attacks that need to be started
         # Only to be called using the update function
-        to_start = self.attack_list[~self.attack_list["id"].isin(self.attacks_in_progress + self.attacks_completed) & (self.attack_list["time"] <= datetime.now())]["id"].values
-        return to_start
+        now = pd.Timestamp("now")
+    
+        to_start = self.attack_list[~ self.attack_list["id"].isin(self.attacks_in_progress + self.attacks_completed) 
+                & (self.attack_list["time"] + pd.Timedelta('05:00:00') <= now)]
+
+
+        return to_start["id"].values
+
     
     
 

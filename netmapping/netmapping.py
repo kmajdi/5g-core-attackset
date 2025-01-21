@@ -3,17 +3,15 @@ import time
 from attack import Attack
 
 class NetworkMapping(Attack):
-    def __init__(self, target_ip):
+    def __init__(self, target_ip="10.96.243.228"):
         self.target_ip = target_ip
         super().__init__("net_mapping")
 
-    def execute(self, wait):
-        time.sleep(wait)
+    def execute(self):
         result = subprocess.run(['nmap', self.target_ip], capture_output=True, text=True)
         print(result.stdout)
 
-    def clean_up(self, wait):
-        time.sleep(wait)
+    def clean_up(self):
         print("No cleanup required for Network Mapping")
         
     def get_log_start(self):

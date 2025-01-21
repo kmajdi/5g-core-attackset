@@ -8,7 +8,7 @@ attack_dict = {"port_scanning": PortScanning,
                "denial_of_service": Dos,
                "net_mapping": NetworkMapping,
                "ssl_tls": SSLTLSAttack,
-               "host_exec": HostWrite}
+               "host_write": HostWrite}
 
 def get_attack(attack_type):
     return attack_dict[attack_type]()

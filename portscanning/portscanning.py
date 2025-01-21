@@ -3,13 +3,12 @@ import time
 from attack import Attack
 
 class PortScanning(Attack):
-    def __init__(self, target_ip, ports=["22", "80", "443"]):
+    def __init__(self, target_ip="10.96.243.228", ports=["22", "80", "443"]):
         self.target_ip = target_ip
         self.ports = ports
-        super.__init__("port_scanning")
+        super().__init__("port_scanning")
 
-    def execute(self, wait):
-        time.sleep(wait)
+    def execute(self):
         result = subprocess.run(['nmap', '-p', *self.ports, self.target_ip], capture_output=True, text=True)
         print(result.stdout)
 

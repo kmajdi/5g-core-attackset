@@ -25,7 +25,7 @@ if args.type == "net_mapping":
     attack = NetworkMapping("10.110.198.65")
 if args.type == "ssl_tls":
     attack = SSLTLSAttack("10.110.198.65" ,"255.255.255.0")
-if args.type == "host_exec":
+if args.type == "host_write":
     attack = HostWrite()
 if attack is None:
     raise ValueError("Invalid Argument")

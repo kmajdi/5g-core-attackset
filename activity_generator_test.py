@@ -1,6 +1,7 @@
 from activity_generator import ActivityGenerator
 
 act = ActivityGenerator()
-act.start()
-act.update()
+
+while True:
+    act.update()
 

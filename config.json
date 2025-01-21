@@ -1,9 +1,9 @@
 {
 
-	"time_start": "2024-08-15 21:00:00",
-	"time_end": "2024-08-15 22:00:00",
+	"time_start": "2025-01-14 15:30:00",
+	"time_end": "2025-01-14 15:45:00",
 	"attack_type": [
-		"denial_of_service",
+		"net_mapping",
 		"host_write",
 		"port_scanning"
 	],
