@@ -102,6 +102,12 @@ class ActivityGenerator:
 
         self.attacks_in_progress = self.attacks_in_progress + to_start.tolist()
 
+        if self.time_end < datetime.now() - timedelta(hours=5):
+            print("[{}][ACTGEN] Malicious Activity Generator Stopped.".format(datetime.now() - timedelta(hours=5)))
+            return False
+
+        return True
+
     def make_in_progress(self):
         # Helper function to identify attacks that need to be started
         # Only to be called using the update function

@@ -34,6 +34,15 @@ class HostWrite(Attack):
         subprocess.run(['docker', 'exec', self.container, 'sh', '-c', 'echo "{} ALL=(ALL) NOPASSWD: ALL" > /{}/etc/sudoers.d/010_{}-nopasswd'.format(self.username, self.workdir, self.username)])
         # time.sleep(kill_in_sec)
 
+    def finalize(self):
+        result = subprocess.run(["docker", "ps", "-a"],
+            capture_output = True, # Python >= 3.7 only
+            text = True # Python >= 3.7 only
+            ).stdout.split("\n")[1][:12]
+    
+        subprocess.run(["docker", "stop", result])
+        subprocess.run(["docker", "rm", result])
+
     def get_log_start(self):
         return f"[{self.time_start}][{self.name}][{self.container}] Attack Started"
     
